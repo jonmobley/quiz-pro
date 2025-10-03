@@ -1140,11 +1140,11 @@ const QuizCreator = () => {
             <div className="flex-1 flex flex-col">
               {/* Status and Sort Dropdowns on same row */}
               <div className="px-4 py-3 bg-white">
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <select
                     value={getStatusFilterOptions().find(opt => getStatusFilterValue(opt) === selectedStatusFilter) || 'All'}
                     onChange={(e) => setSelectedStatusFilter(getStatusFilterValue(e.target.value))}
-                    className="flex-1 pl-3 pr-8 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 pl-2 pr-6 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {getStatusFilterOptions().map(status => (
                       <option key={status} value={status}>{status}</option>
@@ -1153,7 +1153,7 @@ const QuizCreator = () => {
                   <select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
-                    className="flex-1 pl-3 pr-8 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 pl-2 pr-6 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="recently-modified">Recent</option>
                     <option value="title">Title</option>
