@@ -177,13 +177,25 @@ const QuizCreator = () => {
       }
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        if (currentQuiz) addQuestion();
+        if (currentQuiz) {
+          // Add question directly here to avoid dependency issues
+          const newQuestion = {
+            id: Date.now().toString(),
+            question: '',
+            answers: [{ text: '', correct: false }]
+          };
+          const updated = { ...currentQuiz, questions: [...currentQuiz.questions, newQuestion] };
+          setCurrentQuiz(updated);
+          saveToHistory(updated);
+          setIsSaved(false);
+          autoSave(updated);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, currentQuiz, addQuestion]);
+  }, [undo, redo, currentQuiz, saveToHistory, autoSave]);
 
   const autoSave = useCallback((quiz) => {
     if (!autoSaveEnabled) return;
@@ -365,7 +377,7 @@ const QuizCreator = () => {
     autoSave(updated);
   }, [currentQuiz, currentUser, saveToHistory, autoSave]);
 
-  const addQuestion = useCallback(() => {
+  const addQuestion = () => {
     const newQuestion = {
       id: Date.now().toString(),
       question: '',
@@ -374,7 +386,7 @@ const QuizCreator = () => {
     updateQuiz({
       questions: [...currentQuiz.questions, newQuestion]
     });
-  }, [currentQuiz, updateQuiz]);
+  };
 
   const updateQuestion = (qIndex, updates) => {
     const questions = [...currentQuiz.questions];
