@@ -188,14 +188,14 @@ const QuizCreator = () => {
           setCurrentQuiz(updated);
           saveToHistory(updated);
           setIsSaved(false);
-          autoSave(updated);
+          // Auto-save will be handled by the updateQuiz function
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, currentQuiz, saveToHistory, autoSave]);
+  }, [undo, redo, currentQuiz, saveToHistory]);
 
   const autoSave = useCallback((quiz) => {
     if (!autoSaveEnabled) return;
@@ -375,7 +375,7 @@ const QuizCreator = () => {
     saveToHistory(updated);
     setIsSaved(false);
     autoSave(updated);
-  }, [currentQuiz, currentUser, saveToHistory, autoSave]);
+  }, [currentQuiz, currentUser, saveToHistory]);
 
   const addQuestion = () => {
     const newQuestion = {
