@@ -778,27 +778,11 @@ const QuizCreator = () => {
 
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'block' : 'hidden'} md:block fixed md:relative inset-0 md:inset-auto z-20 md:z-0 bg-white md:w-64 border-r flex flex-col`}>
-        {/* Desktop Navigation Header */}
-        <div className="hidden md:block p-4 border-b">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-gray-800">Quiz Pro</h1>
-          </div>
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            <button className="flex-1 py-2 px-3 text-sm font-medium bg-blue-500 text-white rounded-md">
-              Quizzes
-            </button>
-            <button className="flex-1 py-2 px-3 text-sm font-medium text-gray-600 hover:text-gray-900">
-              Editor
-            </button>
-          </div>
-        </div>
-        
-        {/* Mobile Navigation Header */}
-        <div className="md:hidden p-4 border-b flex justify-between items-center">
-          <h2 className="font-bold text-lg">Quiz List</h2>
+        <div className="p-4 border-b flex justify-between items-center">
+          <h2 className="font-bold text-lg">Quizzes</h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="p-1 hover:bg-gray-100 rounded"
+            className="md:hidden p-1 hover:bg-gray-100 rounded"
           >
             <X size={20} />
           </button>
@@ -830,7 +814,7 @@ const QuizCreator = () => {
                       quiz.status === 'Need Approval' ? 'bg-yellow-100 text-yellow-700' :
                       quiz.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
                       'bg-gray-100 text-gray-600'
-}`}>
+                    }`}>
                       {quiz.status}
                     </span>
                   </div>
@@ -853,9 +837,7 @@ const QuizCreator = () => {
               </button>
             </div>
           ))}
-        </div>
-
-        <div className="p-4 border-t space-y-2">
+        </div>        <div className="p-4 border-t space-y-2">
           <button
             onClick={createNewQuiz}
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2"
@@ -1127,58 +1109,6 @@ const QuizCreator = () => {
             </div>
           ) : (
             <div className="max-w-3xl mx-auto space-y-6">
-              {/* Toolbar */}
-              <div className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={undo}
-                    disabled={historyIndex <= 0}
-                    className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 rounded transition-colors"
-                    title="Undo (Ctrl+Z)"
-                  >
-                    <Undo size={18} />
-                  </button>
-                  <button
-                    onClick={redo}
-                    disabled={historyIndex >= history.length - 1}
-                    className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 rounded transition-colors"
-                    title="Redo (Ctrl+Y)"
-                  >
-                    <Redo size={18} />
-                  </button>
-                  <div className="w-px h-6 bg-gray-300 mx-2"></div>
-                  <button
-                    onClick={manualSave}
-                    className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm flex items-center gap-2"
-                  >
-                    <Check size={16} />
-                    Save
-                  </button>
-                  {showSavedCheck && (
-                    <span className="text-green-600 text-sm flex items-center gap-1">
-                      <Check size={16} />
-                      Saved!
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-sm text-gray-600">
-                    <input
-                      type="checkbox"
-                      checked={autoSaveEnabled}
-                      onChange={(e) => setAutoSaveEnabled(e.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    Auto-save
-                  </label>
-                  <button
-                    onClick={() => setShowPreview(true)}
-                    className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors text-sm"
-                  >
-                    Preview
-                  </button>
-                </div>
-              </div>
               {/* Toolbar */}
               <div className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
