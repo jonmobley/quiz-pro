@@ -778,11 +778,27 @@ const QuizCreator = () => {
 
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'block' : 'hidden'} md:block fixed md:relative inset-0 md:inset-auto z-20 md:z-0 bg-white md:w-64 border-r flex flex-col`}>
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="font-bold text-lg">Quizzes</h2>
+        {/* Desktop Navigation Header */}
+        <div className="hidden md:block p-4 border-b">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-800">Quiz Pro</h1>
+          </div>
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button className="flex-1 py-2 px-3 text-sm font-medium bg-blue-500 text-white rounded-md">
+              Quizzes
+            </button>
+            <button className="flex-1 py-2 px-3 text-sm font-medium text-gray-600 hover:text-gray-900">
+              Editor
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile Navigation Header */}
+        <div className="md:hidden p-4 border-b flex justify-between items-center">
+          <h2 className="font-bold text-lg">Quiz List</h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden p-1 hover:bg-gray-100 rounded"
+            className="p-1 hover:bg-gray-100 rounded"
           >
             <X size={20} />
           </button>
