@@ -31,6 +31,7 @@ const QuizCreator = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [userNames, setUserNames] = useState(['Ben', 'Blake', 'Dustin', 'Jon', 'Luke', 'Melissa', 'Skyler']);
   const [categories, setCategories] = useState([]);
+  const [sidebarView, setSidebarView] = useState('quizzes'); // 'quizzes' or 'editor'
   const inputRefs = useRef({});
 
   // Load data from Firebase
@@ -778,65 +779,184 @@ const QuizCreator = () => {
 
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'block' : 'hidden'} md:block fixed md:relative inset-0 md:inset-auto z-20 md:z-0 bg-white md:w-64 border-r flex flex-col`}>
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="font-bold text-lg">Quizzes</h2>
+        {/* Desktop Navigation Header */}
+        <div className="hidden md:block p-4 border-b">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-800">Quiz Pro</h1>
+          </div>
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button 
+              onClick={() => setSidebarView('quizzes')}
+              className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors ${
+                sidebarView === 'quizzes' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Quizzes
+            </button>
+            <button 
+              onClick={() => setSidebarView('editor')}
+              className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors ${
+                sidebarView === 'editor' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Editor
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile Navigation Header */}
+        <div className="md:hidden p-4 border-b flex justify-between items-center">
+          <h2 className="font-bold text-lg">{sidebarView === 'quizzes' ? 'Quiz List' : 'Settings'}</h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden p-1 hover:bg-gray-100 rounded"
+            className="p-1 hover:bg-gray-100 rounded"
           >
             <X size={20} />
           </button>
         </div>
         
         <div className="flex-1 overflow-y-auto">
-          {quizzes.map(quiz => (
-            <div
-              key={quiz.id}
-              className={`p-4 border-b hover:bg-gray-50 ${
-                currentQuiz?.id === quiz.id ? 'bg-blue-50' : ''
-              }`}
-            >
+          {sidebarView === 'quizzes' ? (
+            // Quiz list view
+            quizzes.map(quiz => (
               <div
-                onClick={() => {
-                  setCurrentQuiz(quiz);
-                  setHistory([JSON.parse(JSON.stringify(quiz))]);
-                  setHistoryIndex(0);
-                  setIsSaved(true);
-                  setSidebarOpen(false);
-                }}
-                className="cursor-pointer"
+                key={quiz.id}
+                className={`p-4 border-b hover:bg-gray-50 ${
+                  currentQuiz?.id === quiz.id ? 'bg-blue-50' : ''
+                }`}
               >
-                <div className="font-medium truncate">{quiz.title}</div>
-                {quiz.status && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    <span className={`inline-block px-2 py-0.5 rounded ${
-                      quiz.status === 'Approved' ? 'bg-green-100 text-green-700' :
-                      quiz.status === 'Need Approval' ? 'bg-yellow-100 text-yellow-700' :
-                      quiz.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
-                      'bg-gray-100 text-gray-600'
-                    }`}>
-                      {quiz.status}
-                    </span>
+                <div
+                  onClick={() => {
+                    setCurrentQuiz(quiz);
+                    setHistory([JSON.parse(JSON.stringify(quiz))]);
+                    setHistoryIndex(0);
+                    setIsSaved(true);
+                    setSidebarOpen(false);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <div className="font-medium truncate">{quiz.title}</div>
+                  {quiz.status && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      <span className={`inline-block px-2 py-0.5 rounded ${
+                        quiz.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                        quiz.status === 'Need Approval' ? 'bg-yellow-100 text-yellow-700' :
+                        quiz.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-600'
+                      }`}>
+                        {quiz.status}
+                      </span>
+                    </div>
+                  )}
+                  {quiz.category && (
+                    <div className="text-xs text-gray-500 mt-1">{quiz.category}</div>
+                  )}
+                  <div className="text-xs text-gray-400 mt-1">
+                    {new Date(quiz.lastModified).toLocaleDateString()}
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    confirmDeleteQuiz(quiz);
+                  }}
+                  className="mt-2 text-xs text-red-500 hover:text-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          ) : (
+            // Settings/Editor page
+            <div className="p-4 space-y-6">
+              <div>
+                <h3 className="font-medium text-gray-900 mb-3">Quiz Settings</h3>
+                
+                {currentQuiz && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Quiz Title
+                      </label>
+                      <input
+                        type="text"
+                        value={currentQuiz.title}
+                        onChange={(e) => updateQuiz({ title: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="Enter quiz title"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Category
+                      </label>
+                      <select
+                        value={currentQuiz.category || ''}
+                        onChange={(e) => updateQuiz({ category: e.target.value })}
+                        className="w-full px-3 py-2 pr-8 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      >
+                        <option value="">Select category</option>
+                        {getAllCategories().map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Status
+                      </label>
+                      <select
+                        value={currentQuiz.status || 'Draft'}
+                        onChange={(e) => updateQuiz({ status: e.target.value })}
+                        className="w-full px-3 py-2 pr-8 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      >
+                        <option value="Draft">Draft</option>
+                        <option value="Need Approval">Need Approval</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </div>
                   </div>
                 )}
-                {quiz.category && (
-                  <div className="text-xs text-gray-500 mt-1">{quiz.category}</div>
+                
+                {!currentQuiz && (
+                  <p className="text-sm text-gray-500">Select a quiz to edit settings</p>
                 )}
-                <div className="text-xs text-gray-400 mt-1">
-                  {new Date(quiz.lastModified).toLocaleDateString()}
+              </div>
+              
+              <div className="border-t pt-4">
+                <h3 className="font-medium text-gray-900 mb-3">App Settings</h3>
+                
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={autoSaveEnabled}
+                      onChange={(e) => setAutoSaveEnabled(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    Enable auto-save
+                  </label>
                 </div>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  confirmDeleteQuiz(quiz);
-                }}
-                className="mt-2 text-xs text-red-500 hover:text-red-700"
-              >
-                Delete
-              </button>
+              
+              <div className="border-t pt-4">
+                <h3 className="font-medium text-gray-900 mb-3">Categories</h3>
+                <div className="text-xs text-gray-500 mb-2">
+                  Available: {getAllCategories().join(', ') || 'None'}
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <h3 className="font-medium text-gray-900 mb-3">Users</h3>
+                <div className="text-xs text-gray-500 mb-2">
+                  Current: {userNames.join(', ')}
+                </div>
+              </div>
             </div>
-          ))}
+          )}
         </div>        <div className="p-4 border-t space-y-2">
           <button
             onClick={createNewQuiz}
